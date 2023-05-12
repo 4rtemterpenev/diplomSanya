@@ -24,36 +24,6 @@ if (document.querySelector('#swiper-recall')) {
 };
 
 
-if (document.querySelector('.popular-slider')) {
-  const popularSlider = new Swiper('.popular-slider', {
-    spaceBetween: 0,
-    slidesPerView: 1,
-    speed: 600,
-    effect: 'fade',
-    // loop: true,
-    autoplay: {
-      delay: 4000,
-    },
-    pagination: {
-      el: '.popular-pagination',
-      type: 'bullets',
-      clickable: true,
-      bulletClass: 'popular-pagination-item',
-      bulletActiveClass: 'active',
-      dynamicBullets: true,
-      renderBullet: function (index, className) {
-        var wrapper = document.createElement('div')
-        var item = document.createElement('img')
-        var path = this.slides[index].querySelector('img').getAttribute('src')
-        item.src = path
-        wrapper.append(item)
-        item.className = className
-
-        return wrapper.innerHTML;
-      }
-    },
-  })
-};
 
 
 
@@ -67,36 +37,6 @@ if (modalOpen)
   })
 
 
-
-
-//найти их в DOM-дереве
-let active = document.querySelectorAll('.items-block__point')
-let hide = document.querySelectorAll('.item')
-let filtres = document.querySelector('.filtres')
-let itemsBlock = document.querySelector('.items-block.visible')
-let closeBtnItemsBlock = document.querySelector('.close')
-
-
-// закрытие выбора фильтра
-if (closeBtnItemsBlock)
-  closeBtnItemsBlock.addEventListener('click', function () {
-    itemsBlock.classList.remove('active')
-  })
-
-// Открытие выбора фильтра
-if (filtres)
-  filtres.addEventListener('click', function () {
-    itemsBlock.classList.add('active')
-  })
-
-//выбор фильтра
-if (active)
-  active.forEach(function (entry) {
-    entry.addEventListener('click', function () {
-      entry.classList.toggle('active')
-      hide.classList.toggle('hide')
-    });
-  });
 
 
 
@@ -165,18 +105,6 @@ document.addEventListener('click', (e) => {
   }
 })
 
-//FAQ
-const faqItems = document.querySelectorAll('.point-block.mobile .point-block__item')
-
-if (faqItems.length > 0)
-  faqItems.forEach((item) => {
-    const faqHead = item.querySelector('.point-block__title')
-    const faqArrow = item.querySelector('.point-block__arrow')
-    faqHead.addEventListener('click', () => {
-      item.classList.toggle('opened')
-      faqArrow.classList.toggle('rotate-90')
-    })
-  });
 
 //Валидация
 $("#cphone").mask("+7 (000) 000-00-00");
@@ -244,48 +172,68 @@ $('.form-block__action').validate({
   },
 });
 
-//Выбор фильтра
-function toggleClass(elem, className) {
-  if (elem.className.indexOf(className) !== -1) {
-    elem.className = elem.className.replace(className, '');
-  }
-  else {
-    elem.className = elem.className.replace(/\s+/g, ' ') + ' ' + className;
-  }
 
-  return elem;
-}
+$("#iphone").mask("+7 (000) 000-00-00");
 
-function toggleMenuDisplay(e) {
-  const dropdown = e.currentTarget.parentNode;
-  const menu = dropdown.querySelector('.menuitems');
-  const icon = dropdown.querySelector('.fa-angle-right');
+$.validator.addMethod("pwcheckallowedchars", function (value) {
+  return /^[a-zA-Zа-яА-я-()ёЁ ]+$/.test(value)
+}, "Недопустимое значение");
 
-  toggleClass(menu, 'hide');
-  toggleClass(icon, 'rotate-90');
-}
+$('.form-block__actions').validate({
+  rules: {
+    cname: {
+      required: true,
+      minlength: 2,
+      pwcheckallowedchars: true
+    },
+    cemail: {
+      required: true,
+      email: true
+    },
+    cphone: {
+      required: true,
+      minlength: 18
+    },
+    area: {
+      required: true,
+      maxlength: 10000
+    }
+  },
+  messages: {
+    cname: {
+      required: 'Поле не заполнено',
+      minlength: 'Минимум 2 символа'
+    },
+    cemail: {
+      required: 'Поле не заполнено',
+      email: 'Введите правильный email'
+    },
+    cphone: {
+      required: 'Поле не заполнено',
+      minlength: 'Введите номер полностью'
+    },
+    area: {
+      required: 'Поле не заполнено',
+      minlength: 'Минимум 10 символов',
+      maxlength: 'Максимум 10000 символов'
+    }
+  },
+  onkeyup: function (element) {
+    let submit = document.querySelector('#form-block__actions .form-block__buttons')
 
-function handleOptionSelected(e) {
-  toggleClass(e.target.parentNode, 'hide');
-
-  const id = e.target.id;
-  const newValue = e.target.textContent + ' ';
-  const titleElem = document.querySelector('.dropdown .titleitems');
-  const icon = document.querySelector('.dropdown .titleitems .fa');
-
-
-  titleElem.textContent = newValue;
-  titleElem.appendChild(icon);
-
-  document.querySelector('.dropdown .titleitems').dispatchEvent(new Event('change'));
-  setTimeout(() => toggleClass(icon, 'rotate-90', 0));
-}
-
-
-const dropdownTitle = document.querySelector('.dropdown .titleitems');
-const dropdownOptions = document.querySelectorAll('.dropdown .option');
-
-if (dropdownTitle)
-  dropdownTitle.addEventListener('click', toggleMenuDisplay);
-
-dropdownOptions.forEach(option => option.addEventListener('click', handleOptionSelected));
+    if ($('#form-block__actions').validate().checkForm()) {
+      submit.classList.remove('disabled')
+    } else {
+      submit.classList.add('disabled')
+    }
+    var excludedKeys = [
+      16, 17, 18, 20, 35, 36, 37,
+      38, 39, 40, 45, 144, 225
+    ];
+    if (event.which === 9 && this.elementValue(element) === "" || $.inArray(event.keyCode, excludedKeys) !== -1) {
+      return;
+    } else if (element.name in this.submitted || element.name in this.invalid) {
+      this.element(element);
+    }
+  },
+});
