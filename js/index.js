@@ -94,6 +94,18 @@ if (menuBtn) {
 
 
 
+let SuccessModal = document.querySelector('.modalform');
+let SuccessModalOpen = document.querySelector('.form-block__button');
+SuccessModalOpen.addEventListener('click', selectDate);
+
+
+function selectDate(){
+  if(this.classList.contains('disabled')){
+      SuccessModal.classList.remove('active');
+  }else {
+      SuccessModal.classList.add('active');
+  }
+}
 
 const hideMenu = document.querySelector('.menu-block')
 const menuBg = document.querySelector('.menu-bg')
