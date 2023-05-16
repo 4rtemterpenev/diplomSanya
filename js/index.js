@@ -93,10 +93,12 @@ if (menuBtn) {
 }
 
 
-
+let SuccessModalV2 = document.querySelector('.modalform.v2');
+let SuccessModalOpenV2 = document.querySelector('.form-block__buttons')
 let SuccessModal = document.querySelector('.modalform');
 let SuccessModalOpen = document.querySelector('.form-block__button');
 SuccessModalOpen.addEventListener('click', selectDate);
+SuccessModalOpenV2.addEventListener('click',selectDate)
 
 
 function selectDate(){
